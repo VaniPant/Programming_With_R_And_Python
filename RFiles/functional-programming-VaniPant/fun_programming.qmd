@@ -1,0 +1,109 @@
+  ---
+title: "Functional Programming"
+subtitle: ""
+author: "Vani Pant"
+date: "28 Oct. 2024"
+---
+
+```{r setup}
+#| include: false
+```
+
+> This little tutorial aims to make you familiar with some of the functions of the `stringr` package and a few regular expressions. 
+
+## Aims 
+This practical support the inline exercises of the [Functional Programming lecture](/slides/fun_programming.qmd)
+
+## Data types reprise
+
+#### Working with months of the year
+Find three ways of expressing the names of the twelve months that will sort correctly. You can abbreviate the names. 
+
+```{r}
+#Answer1
+months_str <- c(
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+)
+factor(months_str, levels=months_str, ordered=TRUE)
+```
+
+```{r}
+#Answer2
+month.name
+```
+
+```{r}
+#Answer3
+sort(lubridate::month(1:12, label=TRUE))
+```
+
+
+## Functions
+
+
+### What is not a function
+
+Which programming structures do you know what are similar but not identical to _functions_?
+
+How do they differ from _functions_?
+
+> Your solution in text
+
+### Calculate the median for all columns in the `trees` data set
+
+You should be able to find three solutions, one returning a list, a vector of doubles and a tibble with a single row respectively.
+```{r}
+# Your solution
+print(map(trees, median))
+print(map_dbl(trees, median))
+print(map_dfr(trees, median))
+
+
+as_tibble(trees) |> 
+    summarise_all(median)
+```
+
+
+## Build linear models
+
+`ChickenWeights` is an in-built data set relating the growth of chicken on a diet.
+
+Which diet has the biggest increase in growth as expressed in weight over time?
+
+
+
+1. Split the chicken by diet using `group_split()`
+2. Build linear model with the `lm` function.
+3. Retrieve the model details with `summary()`. 
+4. Extract the "coefficients" of the linear model which is a Matrix including a "weight" row and a "Estimate" column. 
+
+```{r}
+# Your solution
+splitChick <- group_split(ChickWeight, Diet)
+
+lm <- lm(weight ~ Diet, data = ChickWeight)
+lm
+
+lmSummary <- summary(lm)
+lmSummary
+
+ChickWeight |> group_split(Diet) |> 
+    map(\(grp) lm(weight ~ Time, data=grp)) |> 
+    map(summary) |> 
+    map(\(x) x$coefficients["Time","Estimate"])
+```
+
+
+
+

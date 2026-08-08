@@ -1,0 +1,145 @@
+---
+title: "Data wrangling"
+author: "Vani Pant"
+date: "2024-10-14"
+output: html_document
+editor: source
+---
+
+
+
+
+## Part one - Wrangling
+
+This tutorial will allow you to explore `dplyr` functionality based on the previous lecture. Every question can be answered with a combination of `|>` pipes. You should refrain from using temporary variables and statements outside of the range of the tidyverse.  
+
+The first part does not require joins or pivots.
+
+### Import the [data from the website](https://biostat2.uni.lu/practicals/data/judgments.tsv). 
+Assign to the name `judgments` and correct the column types where needed.
+
+```{r}
+# Write your answer here
+library(tidyverse)
+judge_url <- 
+  "https://biostat2.uni.lu/practicals/data/judgments.tsv"
+judgments <- readr::read_tsv(judge_url)
+
+# Original source
+# https://dataverse.nl/api/access/datafile/11863
+
+# Please use mirror
+# https://biostat2.uni.lu/practicals/data/judgments.tsv
+judgments
+glimpse(judgments)
+```
+
+
+### Use `glimpse()` to identify columns and column types.
+
+What are the dimensions of the data set.
+188*158
+
+### Exercise 1 
+
+You can combine the following tasks into a single statement.
+
+#### Select columns
+Select `gender`, `subject`, `age` and referring to the `STAI` questionnaire.
+
+```{r}
+# Write your answer here
+judgments%>%
+  select(gender, subject, age, contains("STAI"))
+```
+
+
+#### Select all subjects with `STAI_pre` greater than 65 and `STAI_post` greater than 40
+
+```{r}
+# Write your answer here
+judgments%>%
+  select(subject, STAI_pre, STAI_post)%>%
+  filter(STAI_pre>65, STAI_post>40)
+```
+
+
+#### Sort the observations by `STAI_pre` so that the subject with the highest score is on top.
+
+```{r}
+# Write your answer here
+judgments%>%
+  select(subject, STAI_pre)%>%
+  arrange(desc(STAI_pre))
+```
+
+#### For better readability, move the subject, STAI_pre and STAI_post columns to the first positions.
+
+```{r}
+# Write your answer here
+judgments%>%
+  relocate(subject, STAI_pre, STAI_post)
+```
+
+#### Check if the data set contains duplicated rows
+
+::: {.callout-tip}
+### Tip
+Compare the number of rows in the raw input table with the number of rows 
+in a de-duplicated table containing unique rows only. 
+:::
+
+```{r}
+# Your answer in code here
+distinct(judgments)
+```
+
+
+
+### Exercise 2
+
+#### Create a new column called `STAI_pre_category` 
+
+It should contain "low", "normal" and "high" entries depending on the `STAI_pre` values:
+
+  * if `STAI_pre` is less than `25` assign "low",
+  
+  * if `STAI_pre` is over `65` assign "high",
+  
+  * for all other values assign "normal".
+
+#### Arrange the table by `STAI_pre` in a descending manner.
+
+```{r}
+# Write your answer here
+V <- judgments%>%
+  mutate(STAI_pre_category = case_when(
+    STAI_pre < 25 ~ "low",
+    STAI_pre > 65 ~ "high",
+    TRUE ~ "normal"))%>%
+  select(STAI_pre, STAI_pre_category)%>%
+  arrange(desc(STAI_pre))
+V
+```
+
+
+### Display distinct values in `STAI_pre` and `STAI_pre_category`.
+
+```{r}
+# Write your answer here
+V%>%
+  select(STAI_pre, STAI_pre_category)%>%
+  distinct()
+```
+
+
+##### Normalize the values in the REI group
+Divide all entries in the REI questionnaire by 5, the maximal value.
+
+```{r}
+# Write your answer here
+judgments%>%
+  mutate(across(contains("REI"), ~ ./5))
+```
+
+

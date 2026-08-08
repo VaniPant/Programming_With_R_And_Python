@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Vani Pant">
+<meta name="dcterms.date" content="2024-10-07">
+
+<title>stringr</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="stringr_files/libs/clipboard/clipboard.min.js"></script>
+<script src="stringr_files/libs/quarto-html/quarto.js"></script>
+<script src="stringr_files/libs/quarto-html/popper.min.js"></script>
+<script src="stringr_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="stringr_files/libs/quarto-html/anchor.min.js"></script>
+<link href="stringr_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="stringr_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="stringr_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="stringr_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="stringr_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">String manipulation</h1>
+<p class="subtitle lead">Solutions</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Vani Pant </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 7, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p>This little tutorial aims to make you familiar with some of the functions of the <code>stringr</code> package and a few regular expressions.</p>
+</blockquote>
+<section id="stringr-functions" class="level2">
+<h2 class="anchored" data-anchor-id="stringr-functions"><code>stringr</code> functions</h2>
+<p>We will be using the <code>words</code> data that is built into <code>stringr</code>. The data set is available to you if you load the package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>words</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] "a"           "able"        "about"       "absolute"    "accept"     
+  [6] "account"     "achieve"     "across"      "act"         "active"     
+ [11] "actual"      "add"         "address"     "admit"       "advertise"  
+ [16] "affect"      "afford"      "after"       "afternoon"   "again"      
+ [21] "against"     "age"         "agent"       "ago"         "agree"      
+ [26] "air"         "all"         "allow"       "almost"      "along"      
+ [31] "already"     "alright"     "also"        "although"    "always"     
+ [36] "america"     "amount"      "and"         "another"     "answer"     
+ [41] "any"         "apart"       "apparent"    "appear"      "apply"      
+ [46] "appoint"     "approach"    "appropriate" "area"        "argue"      
+ [51] "arm"         "around"      "arrange"     "art"         "as"         
+ [56] "ask"         "associate"   "assume"      "at"          "attend"     
+ [61] "authority"   "available"   "aware"       "away"        "awful"      
+ [66] "baby"        "back"        "bad"         "bag"         "balance"    
+ [71] "ball"        "bank"        "bar"         "base"        "basis"      
+ [76] "be"          "bear"        "beat"        "beauty"      "because"    
+ [81] "become"      "bed"         "before"      "begin"       "behind"     
+ [86] "believe"     "benefit"     "best"        "bet"         "between"    
+ [91] "big"         "bill"        "birth"       "bit"         "black"      
+ [96] "bloke"       "blood"       "blow"        "blue"        "board"      
+[101] "boat"        "body"        "book"        "both"        "bother"     
+[106] "bottle"      "bottom"      "box"         "boy"         "break"      
+[111] "brief"       "brilliant"   "bring"       "britain"     "brother"    
+[116] "budget"      "build"       "bus"         "business"    "busy"       
+[121] "but"         "buy"         "by"          "cake"        "call"       
+[126] "can"         "car"         "card"        "care"        "carry"      
+[131] "case"        "cat"         "catch"       "cause"       "cent"       
+[136] "centre"      "certain"     "chair"       "chairman"    "chance"     
+[141] "change"      "chap"        "character"   "charge"      "cheap"      
+[146] "check"       "child"       "choice"      "choose"      "Christ"     
+[151] "Christmas"   "church"      "city"        "claim"       "class"      
+[156] "clean"       "clear"       "client"      "clock"       "close"      
+[161] "closes"      "clothe"      "club"        "coffee"      "cold"       
+[166] "colleague"   "collect"     "college"     "colour"      "come"       
+[171] "comment"     "commit"      "committee"   "common"      "community"  
+[176] "company"     "compare"     "complete"    "compute"     "concern"    
+[181] "condition"   "confer"      "consider"    "consult"     "contact"    
+[186] "continue"    "contract"    "control"     "converse"    "cook"       
+[191] "copy"        "corner"      "correct"     "cost"        "could"      
+[196] "council"     "count"       "country"     "county"      "couple"     
+[201] "course"      "court"       "cover"       "create"      "cross"      
+[206] "cup"         "current"     "cut"         "dad"         "danger"     
+[211] "date"        "day"         "dead"        "deal"        "dear"       
+[216] "debate"      "decide"      "decision"    "deep"        "definite"   
+[221] "degree"      "department"  "depend"      "describe"    "design"     
+[226] "detail"      "develop"     "die"         "difference"  "difficult"  
+[231] "dinner"      "direct"      "discuss"     "district"    "divide"     
+[236] "do"          "doctor"      "document"    "dog"         "door"       
+[241] "double"      "doubt"       "down"        "draw"        "dress"      
+[246] "drink"       "drive"       "drop"        "dry"         "due"        
+[251] "during"      "each"        "early"       "east"        "easy"       
+[256] "eat"         "economy"     "educate"     "effect"      "egg"        
+[261] "eight"       "either"      "elect"       "electric"    "eleven"     
+[266] "else"        "employ"      "encourage"   "end"         "engine"     
+[271] "english"     "enjoy"       "enough"      "enter"       "environment"
+[276] "equal"       "especial"    "europe"      "even"        "evening"    
+[281] "ever"        "every"       "evidence"    "exact"       "example"    
+[286] "except"      "excuse"      "exercise"    "exist"       "expect"     
+[291] "expense"     "experience"  "explain"     "express"     "extra"      
+[296] "eye"         "face"        "fact"        "fair"        "fall"       
+[301] "family"      "far"         "farm"        "fast"        "father"     
+[306] "favour"      "feed"        "feel"        "few"         "field"      
+[311] "fight"       "figure"      "file"        "fill"        "film"       
+[316] "final"       "finance"     "find"        "fine"        "finish"     
+[321] "fire"        "first"       "fish"        "fit"         "five"       
+[326] "flat"        "floor"       "fly"         "follow"      "food"       
+[331] "foot"        "for"         "force"       "forget"      "form"       
+[336] "fortune"     "forward"     "four"        "france"      "free"       
+[341] "friday"      "friend"      "from"        "front"       "full"       
+[346] "fun"         "function"    "fund"        "further"     "future"     
+[351] "game"        "garden"      "gas"         "general"     "germany"    
+[356] "get"         "girl"        "give"        "glass"       "go"         
+[361] "god"         "good"        "goodbye"     "govern"      "grand"      
+[366] "grant"       "great"       "green"       "ground"      "group"      
+[371] "grow"        "guess"       "guy"         "hair"        "half"       
+[376] "hall"        "hand"        "hang"        "happen"      "happy"      
+[381] "hard"        "hate"        "have"        "he"          "head"       
+[386] "health"      "hear"        "heart"       "heat"        "heavy"      
+[391] "hell"        "help"        "here"        "high"        "history"    
+[396] "hit"         "hold"        "holiday"     "home"        "honest"     
+[401] "hope"        "horse"       "hospital"    "hot"         "hour"       
+[406] "house"       "how"         "however"     "hullo"       "hundred"    
+[411] "husband"     "idea"        "identify"    "if"          "imagine"    
+[416] "important"   "improve"     "in"          "include"     "income"     
+[421] "increase"    "indeed"      "individual"  "industry"    "inform"     
+[426] "inside"      "instead"     "insure"      "interest"    "into"       
+[431] "introduce"   "invest"      "involve"     "issue"       "it"         
+[436] "item"        "jesus"       "job"         "join"        "judge"      
+[441] "jump"        "just"        "keep"        "key"         "kid"        
+[446] "kill"        "kind"        "king"        "kitchen"     "knock"      
+[451] "know"        "labour"      "lad"         "lady"        "land"       
+[456] "language"    "large"       "last"        "late"        "laugh"      
+[461] "law"         "lay"         "lead"        "learn"       "leave"      
+[466] "left"        "leg"         "less"        "let"         "letter"     
+[471] "level"       "lie"         "life"        "light"       "like"       
+[476] "likely"      "limit"       "line"        "link"        "list"       
+[481] "listen"      "little"      "live"        "load"        "local"      
+[486] "lock"        "london"      "long"        "look"        "lord"       
+[491] "lose"        "lot"         "love"        "low"         "luck"       
+[496] "lunch"       "machine"     "main"        "major"       "make"       
+[501] "man"         "manage"      "many"        "mark"        "market"     
+[506] "marry"       "match"       "matter"      "may"         "maybe"      
+[511] "mean"        "meaning"     "measure"     "meet"        "member"     
+[516] "mention"     "middle"      "might"       "mile"        "milk"       
+[521] "million"     "mind"        "minister"    "minus"       "minute"     
+[526] "miss"        "mister"      "moment"      "monday"      "money"      
+[531] "month"       "more"        "morning"     "most"        "mother"     
+[536] "motion"      "move"        "mrs"         "much"        "music"      
+[541] "must"        "name"        "nation"      "nature"      "near"       
+[546] "necessary"   "need"        "never"       "new"         "news"       
+[551] "next"        "nice"        "night"       "nine"        "no"         
+[556] "non"         "none"        "normal"      "north"       "not"        
+[561] "note"        "notice"      "now"         "number"      "obvious"    
+[566] "occasion"    "odd"         "of"          "off"         "offer"      
+[571] "office"      "often"       "okay"        "old"         "on"         
+[576] "once"        "one"         "only"        "open"        "operate"    
+[581] "opportunity" "oppose"      "or"          "order"       "organize"   
+[586] "original"    "other"       "otherwise"   "ought"       "out"        
+[591] "over"        "own"         "pack"        "page"        "paint"      
+[596] "pair"        "paper"       "paragraph"   "pardon"      "parent"     
+[601] "park"        "part"        "particular"  "party"       "pass"       
+[606] "past"        "pay"         "pence"       "pension"     "people"     
+[611] "per"         "percent"     "perfect"     "perhaps"     "period"     
+[616] "person"      "photograph"  "pick"        "picture"     "piece"      
+[621] "place"       "plan"        "play"        "please"      "plus"       
+[626] "point"       "police"      "policy"      "politic"     "poor"       
+[631] "position"    "positive"    "possible"    "post"        "pound"      
+[636] "power"       "practise"    "prepare"     "present"     "press"      
+[641] "pressure"    "presume"     "pretty"      "previous"    "price"      
+[646] "print"       "private"     "probable"    "problem"     "proceed"    
+[651] "process"     "produce"     "product"     "programme"   "project"    
+[656] "proper"      "propose"     "protect"     "provide"     "public"     
+[661] "pull"        "purpose"     "push"        "put"         "quality"    
+[666] "quarter"     "question"    "quick"       "quid"        "quiet"      
+[671] "quite"       "radio"       "rail"        "raise"       "range"      
+[676] "rate"        "rather"      "read"        "ready"       "real"       
+[681] "realise"     "really"      "reason"      "receive"     "recent"     
+[686] "reckon"      "recognize"   "recommend"   "record"      "red"        
+[691] "reduce"      "refer"       "regard"      "region"      "relation"   
+[696] "remember"    "report"      "represent"   "require"     "research"   
+[701] "resource"    "respect"     "responsible" "rest"        "result"     
+[706] "return"      "rid"         "right"       "ring"        "rise"       
+[711] "road"        "role"        "roll"        "room"        "round"      
+[716] "rule"        "run"         "safe"        "sale"        "same"       
+[721] "saturday"    "save"        "say"         "scheme"      "school"     
+[726] "science"     "score"       "scotland"    "seat"        "second"     
+[731] "secretary"   "section"     "secure"      "see"         "seem"       
+[736] "self"        "sell"        "send"        "sense"       "separate"   
+[741] "serious"     "serve"       "service"     "set"         "settle"     
+[746] "seven"       "sex"         "shall"       "share"       "she"        
+[751] "sheet"       "shoe"        "shoot"       "shop"        "short"      
+[756] "should"      "show"        "shut"        "sick"        "side"       
+[761] "sign"        "similar"     "simple"      "since"       "sing"       
+[766] "single"      "sir"         "sister"      "sit"         "site"       
+[771] "situate"     "six"         "size"        "sleep"       "slight"     
+[776] "slow"        "small"       "smoke"       "so"          "social"     
+[781] "society"     "some"        "son"         "soon"        "sorry"      
+[786] "sort"        "sound"       "south"       "space"       "speak"      
+[791] "special"     "specific"    "speed"       "spell"       "spend"      
+[796] "square"      "staff"       "stage"       "stairs"      "stand"      
+[801] "standard"    "start"       "state"       "station"     "stay"       
+[806] "step"        "stick"       "still"       "stop"        "story"      
+[811] "straight"    "strategy"    "street"      "strike"      "strong"     
+[816] "structure"   "student"     "study"       "stuff"       "stupid"     
+[821] "subject"     "succeed"     "such"        "sudden"      "suggest"    
+[826] "suit"        "summer"      "sun"         "sunday"      "supply"     
+[831] "support"     "suppose"     "sure"        "surprise"    "switch"     
+[836] "system"      "table"       "take"        "talk"        "tape"       
+[841] "tax"         "tea"         "teach"       "team"        "telephone"  
+[846] "television"  "tell"        "ten"         "tend"        "term"       
+[851] "terrible"    "test"        "than"        "thank"       "the"        
+[856] "then"        "there"       "therefore"   "they"        "thing"      
+[861] "think"       "thirteen"    "thirty"      "this"        "thou"       
+[866] "though"      "thousand"    "three"       "through"     "throw"      
+[871] "thursday"    "tie"         "time"        "to"          "today"      
+[876] "together"    "tomorrow"    "tonight"     "too"         "top"        
+[881] "total"       "touch"       "toward"      "town"        "trade"      
+[886] "traffic"     "train"       "transport"   "travel"      "treat"      
+[891] "tree"        "trouble"     "true"        "trust"       "try"        
+[896] "tuesday"     "turn"        "twelve"      "twenty"      "two"        
+[901] "type"        "under"       "understand"  "union"       "unit"       
+[906] "unite"       "university"  "unless"      "until"       "up"         
+[911] "upon"        "use"         "usual"       "value"       "various"    
+[916] "very"        "video"       "view"        "village"     "visit"      
+[921] "vote"        "wage"        "wait"        "walk"        "wall"       
+[926] "want"        "war"         "warm"        "wash"        "waste"      
+[931] "watch"       "water"       "way"         "we"          "wear"       
+[936] "wednesday"   "wee"         "week"        "weigh"       "welcome"    
+[941] "well"        "west"        "what"        "when"        "where"      
+[946] "whether"     "which"       "while"       "white"       "who"        
+[951] "whole"       "why"         "wide"        "wife"        "will"       
+[956] "win"         "wind"        "window"      "wish"        "with"       
+[961] "within"      "without"     "woman"       "wonder"      "wood"       
+[966] "word"        "work"        "world"       "worry"       "worse"      
+[971] "worth"       "would"       "write"       "wrong"       "year"       
+[976] "yes"         "yesterday"   "yet"         "you"         "young"      </code></pre>
+</div>
+</div>
+<section id="select-words-that-contain-a-y" class="level5">
+<h5 class="anchored" data-anchor-id="select-words-that-contain-a-y">Select words that contain a <code>y</code></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_subset</span>(words, <span class="st">"y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "already"     "always"      "any"         "apply"       "authority"  
+ [6] "away"        "baby"        "beauty"      "body"        "boy"        
+[11] "busy"        "buy"         "by"          "carry"       "city"       
+[16] "community"   "company"     "copy"        "country"     "county"     
+[21] "day"         "dry"         "early"       "easy"        "economy"    
+[26] "employ"      "enjoy"       "every"       "eye"         "family"     
+[31] "fly"         "friday"      "germany"     "goodbye"     "guy"        
+[36] "happy"       "heavy"       "history"     "holiday"     "identify"   
+[41] "industry"    "key"         "lady"        "lay"         "likely"     
+[46] "many"        "marry"       "may"         "maybe"       "monday"     
+[51] "money"       "necessary"   "okay"        "only"        "opportunity"
+[56] "party"       "pay"         "play"        "policy"      "pretty"     
+[61] "quality"     "ready"       "really"      "saturday"    "say"        
+[66] "secretary"   "society"     "sorry"       "stay"        "story"      
+[71] "strategy"    "study"       "sunday"      "supply"      "system"     
+[76] "they"        "thirty"      "thursday"    "today"       "try"        
+[81] "tuesday"     "twenty"      "type"        "university"  "very"       
+[86] "way"         "wednesday"   "why"         "worry"       "year"       
+[91] "yes"         "yesterday"   "yet"         "you"         "young"      </code></pre>
+</div>
+</div>
+</section>
+<section id="retrieve-a-boolean-vector-that-indicates-which-words-start-with-y" class="level5">
+<h5 class="anchored" data-anchor-id="retrieve-a-boolean-vector-that-indicates-which-words-start-with-y">Retrieve a boolean vector that indicates which words start with <code>y</code></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(words, <span class="st">'^y'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [49] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [73] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [85] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [97] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[109] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[121] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[133] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[145] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[157] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[169] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[181] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[193] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[205] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[217] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[229] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[241] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[253] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[265] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[277] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[289] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[301] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[313] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[325] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[337] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[349] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[361] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[373] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[385] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[397] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[409] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[421] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[433] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[445] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[457] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[469] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[481] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[493] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[505] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[517] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[529] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[541] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[553] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[565] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[577] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[589] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[601] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[613] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[625] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[637] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[649] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[661] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[673] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[685] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[697] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[709] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[721] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[733] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[745] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[757] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[769] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[781] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[793] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[805] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[817] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[829] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[841] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[853] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[865] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[877] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[889] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[901] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[913] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[925] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[937] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[949] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[961] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[973] FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="retrieve-the-indices-for-all-words-containing-ch-within-the-word." class="level5">
+<h5 class="anchored" data-anchor-id="retrieve-the-indices-for-all-words-containing-ch-within-the-word.">Retrieve the indices for all words containing <code>ch</code> within the word.</h5>
+<p><code>ch</code> must not be present at the start or the end of the word.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_which</span>(words, <span class="st">'.ch.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]   7 449 497 724 725</code></pre>
+</div>
+</div>
+</section>
+<section id="extract-the-y-and-the-previous-character." class="level5">
+<h5 class="anchored" data-anchor-id="extract-the-y-and-the-previous-character.">Extract the <code>y</code> and the previous character.</h5>
+<p>Note: Use the function <code>unique()</code> around the results to avoid printing many empty matches.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(<span class="fu">str_extract</span>(words, <span class="st">'.y'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] NA   "dy" "ay" "ny" "ly" "ty" "by" "oy" "sy" "uy" "ry" "py" "my" "ey" "vy"
+[16] "fy" "cy" "gy" "hy"</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="virus-research" class="level2">
+<h2 class="anchored" data-anchor-id="virus-research">Virus Research</h2>
+<p>Read the genome sequence of the Hepatitis D virus: <a href="https://biostat2.uni.lu/practicals/data/hepd.fasta">hepd.fasta</a>. For now, just execute the following:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hepd <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_lines</span>(<span class="st">"data/hepd.fasta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="what-is-the-length-of-the-genome-sequence" class="level5">
+<h5 class="anchored" data-anchor-id="what-is-the-length-of-the-genome-sequence">What is the length of the genome sequence?</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_length</span>(hepd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1682</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-the-sequence-composition-how-often-does-each-character-occur" class="level5">
+<h5 class="anchored" data-anchor-id="what-is-the-sequence-composition-how-often-does-each-character-occur">What is the sequence composition? How often does each character occur?</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">strsplit</span>(hepd, <span class="st">""</span>)[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  A   C   G   T 
+339 504 485 354 </code></pre>
+</div>
+</div>
+</section>
+<section id="find-all-motifs-in-the-sequence" class="level5">
+<h5 class="anchored" data-anchor-id="find-all-motifs-in-the-sequence">Find all motifs in the sequence</h5>
+<p>Find all matches of the sequence <span class="math inline">\(ATG\)</span> in the sequence.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(hepd, <span class="st">"ATG"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] │ &lt;ATG&gt;AGCCAAGTTCCGAACAAGGATTCGCGGGGAGGATAGATCAGCGCCCGAGAGGGGTGAGTCGGTAAAGAGCATTGGAACGTCGGAGATACAACTCCCAAGAAGGAAAAAAGAGAAAGCAAGAAGCGG&lt;ATG&gt;AATTTCCCCATAACGCCAGTGAAACTCTAGGAAGGGGAAAGAGGGAAGGTGGAAGAGAAGGAGGCGGGCCTCCCGATCCGAGGGGCCCGGCGGCCAAGTTTGGAGGACACTCCGGCCCGAAGGGTTGAGAGTACCCCAGAGGGAGGAAGCCACACGGAGTAGAACAGAGAAATCACCTCCAGAGGACCCCTTCAGCGAACAGAGAGCGCATCGCGAGAGGGAGTAGACCATAGCGATAGGAGGGG&lt;ATG&gt;CTAGGAGTTGGGGGAGACCGAAGCGAGGAGGAAAGCAAAGAGAGCAGCGGGGCTAGCAGGTGGGTGTTCCGCCCCCCGAGAGGGGACGAGTGAGGCTTATCCCGGGGAACTCGACTTATCGTCCCCACATAGCAGACTCCCGGACCCCCTTTCAAAGTGACCGAGGGGGGTGACTTTGAACATTGGGGACCAGTGGAGCC&lt;ATG&gt;GG&lt;ATG&gt;CTCCTCCCGATTCCGCCCAAGCTCCTTCCCCCCAAGGGTCGCCCAGGA&lt;ATG&gt;GCGGGACCCCACTCTGCAGGGTCCGCGTTCCATCCTTTCTTACCTG&lt;ATG&gt;GCCGGC&lt;ATG&gt;GTCCCAGCCTCCTCGCTGGCGCCGGCTGGGCAACATTCCGAGGGGACCGTCCCCTCGGTA&lt;ATG&gt;GCGA&lt;ATG&gt;GGACCCACAAATCTCTCTAGCTTCCCAGAGAGAAGCGAGAGAAAAGTGGCTCTCCCTTAGCCATCCGAGTGGACGTGCGTCCTCCTTCGG&lt;ATG&gt;CCCAGGTCGGACCGCGAGGAGGTGGAG&lt;ATG&gt;CC&lt;ATG&gt;CCGACCCGAAGAGGAAAGAAGGACGCGAGACGCAAACCTGCGAGTGGAAACCCGCTTTATTCACTGGGGTCGACAACTCTGGGGAGAGGAGGGAGGGTCGGCTGGGAAGAGTATATCCT&lt;ATG&gt;GGAATCCCTGGCTTCCCCTT&lt;ATG&gt;TCCAGTCCCTCCCCGGTCCGAGTAAAGGGGGACTCCGGGACTCCTTGC&lt;ATG&gt;CTGGGGACGAAGCCGCCCCCGGGCGCTCCCCTCGTTCCACCTTCGAGGGGGTTCACACCCCCAACCTGCGGGCCGGCTATTCTTCTTTCCCTTCTCTCGTCTTCCTCGGTCAACCTCCTAAGTTCCTCTTCCTCCTCCTTGCTGAGGTTCTTTCCCCCCGCCGATAGCTGCTTTCTCTTGTTCTCGAGGGCCTTCCTTCGTCGGTGATCCTGCCTCTCCTTGTCGGTGAATCCTCCCCTGGAAGGCCTCTTCCTAGGTCCGGAGTCTACTTCCATCTGGTCCGTTCGGGCCCTCTTCGCCGGGGGAGCCCCCTCTCCATCCTTATCTTTCTTTCCGAGAATTCCTTTG&lt;ATG&gt;TTTCCCAGCCAGGG&lt;ATG&gt;TTCATCCTCAAGTTTCTTGATTTTCTTCTTAACCTTCCGGAGGTCTCTCTCGAGTTCCTCTAACTTCTTTCTTCCGCTCACCCACTGCTCGAGAACCTCTTCTCTCCCCCCGCGGTTTTTCCTTCCTTCGGGCCGGCTCATCTTCGACTAGAGGCGACGGTCCTCAGTACTCTTACTCTTTTCTGTAAAGAGGAGACTGCTGGCCCTGTCGCCCAAGTTCGAG</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="cheminformatics-research" class="level2">
+<h2 class="anchored" data-anchor-id="cheminformatics-research">Cheminformatics Research</h2>
+<p>Cheminformatics manipulations in R can be challenging, as there are many string operations, also involving escape characters. These exercises give some brief insights into cheminformatics with strings, using a dataset of agrochemicals (pesticides) from PubChem.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>agro_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/PubChem_Agrochemicals_20231022.csv.gz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 3081 Columns: 19
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (10): cmpdname, mf, inchi, isosmiles, canonicalsmiles, inchikey, iupacna...
+dbl  (9): cid, mw, exactmass, monoisotopicmass, pclidcnt, gpidcnt, gpfamilyc...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<section id="how-many-of-these-agrochemicals-are-also-drugs-pharmaceuticals" class="level4">
+<h4 class="anchored" data-anchor-id="how-many-of-these-agrochemicals-are-also-drugs-pharmaceuticals">How many of these agrochemicals are also drugs (pharmaceuticals)?</h4>
+<p>Look in the <code>annothits</code> column for entries that have the tag <code>Drug and Medication Information</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution here</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">str_subset</span>(agro_data<span class="sc">$</span>annothits, <span class="st">"Drug and Medication Information"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 530</code></pre>
+</div>
+</div>
+</section>
+<section id="how-many-agrochemicals-have-stereochemistry-information" class="level4">
+<h4 class="anchored" data-anchor-id="how-many-agrochemicals-have-stereochemistry-information">How many agrochemicals have stereochemistry information?</h4>
+<p>Stereochemistry information is encoded in the <code>isosmiles</code> column and detected by looking for <code>@</code> or <code>\</code> or <code>/</code> symbols.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution here</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">str_detect</span>(agro_data<span class="sc">$</span>isosmiles, <span class="st">"[@</span><span class="sc">\\</span><span class="st">/]"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 602</code></pre>
+</div>
+</div>
+</section>
+<section id="what-happens-if-you-run-this-on-the-canonicalsmiles-column-instead" class="level4">
+<h4 class="anchored" data-anchor-id="what-happens-if-you-run-this-on-the-canonicalsmiles-column-instead">What happens if you run this on the <code>canonicalsmiles</code> column instead?</h4>
+<p>What does this tell you about Canonical SMILES?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution here</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">str_detect</span>(agro_data<span class="sc">$</span>canonicalsmiles, <span class="st">"[@</span><span class="sc">\\</span><span class="st">/]"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+<section id="return-the-canonicalsmiles-of-all-agrochemicals-containing-a-triple-bond" class="level4">
+<h4 class="anchored" data-anchor-id="return-the-canonicalsmiles-of-all-agrochemicals-containing-a-triple-bond">Return the <code>canonicalsmiles</code> of all agrochemicals containing a triple bond</h4>
+<p>Triple bonds are encoded by the <code>#</code> in the SMILES - canonical or isomeric. Use <code>str_view</code> to look at those that are also salts (encoded by <code>.</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution here</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">str_detect</span>(agro_data<span class="sc">$</span>canonicalsmiles, <span class="st">"#.*</span><span class="sc">\\</span><span class="st">."</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+</div>
+</section>
+<section id="how-many-agrochemicals-contain-fluorine" class="level4">
+<h4 class="anchored" data-anchor-id="how-many-agrochemicals-contain-fluorine">How many agrochemicals contain fluorine?</h4>
+<p>Hint: look at the <code>mf</code> column (molecular formula) and look for the element <code>F</code> but be careful, there are also agrochemicals containing iron (<code>Fe</code>) as well. Look at the column contents to see how you can separate these entries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution here</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">str_detect</span>(agro_data<span class="sc">$</span>mf, <span class="st">"F"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 490</code></pre>
+</div>
+</div>
+</section>
+<section id="generate-a-list-of-the-names-of-agrochemicals-that-have-been-contributed-by-luxembourg-contributors." class="level4">
+<h4 class="anchored" data-anchor-id="generate-a-list-of-the-names-of-agrochemicals-that-have-been-contributed-by-luxembourg-contributors.">Generate a list of the names of agrochemicals that have been contributed by Luxembourg contributors.</h4>
+<p>Use the <code>sidsrcname</code> column to detect Luxembourg.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution here</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>agro_data[<span class="fu">str_detect</span>(agro_data<span class="sc">$</span>sidsrcname, <span class="st">"Luxembourg"</span>),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 502 × 19
+       cid cmpdname         mw mf       inchi isosmiles canonicalsmiles inchikey
+     &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt;   
+ 1     807 Iodine        254.  I2       InCh… II        II              PNDPGZB…
+ 2     947 Nitrogen       28.0 N2       InCh… N#N       N#N             IJGRMHO…
+ 3 2723872 D-Fructose    180.  C6H12O6  InCh… C1[C@H](… C1C(C(C(C(O1)(… LKDRXBC…
+ 4     243 Benzoic Acid  122.  C7H6O2   InCh… C1=CC=C(… C1=CC=C(C=C1)C… WPYMKLB…
+ 5    1176 Urea           60.1 CH4N2O   InCh… C(=O)(N)N C(=O)(N)N       XSQUKJJ…
+ 6    1110 Succinic Acid 118.  C4H6O4   InCh… C(CC(=O)… C(CC(=O)O)C(=O… KDYFGRW…
+ 7     785 Hydroquinone  110.  C6H6O2   InCh… C1=CC(=C… C1=CC(=CC=C1O)O QIGBRXM…
+ 8    2519 Caffeine      194.  C8H10N4… InCh… CN1C=NC2… CN1C=NC2=C1C(=… RYYVLZV…
+ 9     996 Phenol         94.1 C6H6O    InCh… C1=CC=C(… C1=CC=C(C=C1)O  ISWSIDI…
+10    5862 Cysteine      121.  C3H7NO2S InCh… C([C@@H]… C(C(C(=O)O)N)S  XUJNEKJ…
+# ℹ 492 more rows
+# ℹ 11 more variables: iupacname &lt;chr&gt;, exactmass &lt;dbl&gt;,
+#   monoisotopicmass &lt;dbl&gt;, pclidcnt &lt;dbl&gt;, gpidcnt &lt;dbl&gt;, gpfamilycnt &lt;dbl&gt;,
+#   annothits &lt;chr&gt;, annothitcnt &lt;dbl&gt;, cidcdate &lt;dbl&gt;, sidsrcname &lt;chr&gt;,
+#   depcatg &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="finally-how-many-agrochemicals-were-contributed-in-2023" class="level4">
+<h4 class="anchored" data-anchor-id="finally-how-many-agrochemicals-were-contributed-in-2023">Finally, how many agrochemicals were contributed in 2023?</h4>
+<p>Use the <code>cidcdate</code> column, which is in <code>YYYYMMDD</code> format.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write your solution here</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">str_detect</span>(agro_data<span class="sc">$</span>cidcdate, <span class="st">"^2023"</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4</code></pre>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

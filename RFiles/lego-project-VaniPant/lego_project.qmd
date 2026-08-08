@@ -1,0 +1,283 @@
+---
+title: "LEGO Project"
+author: "Vani Pant"
+date: "Today"
+format: "html"
+---
+
+
+# 1. Aim
+The project applies concepts from R and tidyverse lectures to analyze a dataset of official Lego sets from rebrickable.com. It focuses on creating a structured Quarto document and implementing the necessary infrastructure for effective data exploration and presentation.
+
+
+# 2. The Install Script
+```{r}
+urls <- c(
+"https://cdn.rebrickable.com/media/downloads/themes.csv.gz?1731740880.0790951",
+"https://cdn.rebrickable.com/media/downloads/colors.csv.gz?1731740880.0910954",
+"https://cdn.rebrickable.com/media/downloads/part_categories.csv.gz?1731740880.0990956",
+"https://cdn.rebrickable.com/media/downloads/parts.csv.gz?1731740881.3191266",
+"https://cdn.rebrickable.com/media/downloads/part_relationships.csv.gz?1731740909.8238513",
+"https://cdn.rebrickable.com/media/downloads/elements.csv.gz?1731740882.24315",
+"https://cdn.rebrickable.com/media/downloads/sets.csv.gz?1731740883.5191824",
+"https://cdn.rebrickable.com/media/downloads/minifigs.csv.gz?1731740883.855191",
+"https://cdn.rebrickable.com/media/downloads/inventories.csv.gz?1731740882.943168",
+"https://cdn.rebrickable.com/media/downloads/inventory_parts.csv.gz?1731740908.7798247",
+"https://cdn.rebrickable.com/media/downloads/inventory_sets.csv.gz?1731740908.9638295",
+"https://cdn.rebrickable.com/media/downloads/inventory_minifigs.csv.gz?1731740909.3798401")
+
+file_names <- c("themes.csv.gz", "colors.csv.gz","part_categories.csv.gz", "parts.csv.gz", "part_relationships.csv.gz", "elements.csv.gz", "sets.csv.gz", "minifigs.csv.gz", "inventories.csv.gz", "inventory_parts.csv.gz", "inventory_sets.csv.gz", "inventory_minifigs.csv.gz")
+
+if (!dir.exists("data")){
+  dir.create("data")
+  }
+  
+for (i in seq_along(urls)) {
+  file_path <- file.path("data", file_names[i])
+  if (!file.exists(file_path)) {
+    message(paste("Downloading:", file_names[i]))
+    download.file(urls[i], file_path, mode = "wb")
+    message(paste("Saved to:", file_path))
+  } else {
+    message(paste("Skipping:", file_names[i], "(already exists)"))
+  }
+}
+
+library(tidyverse)
+library(dplyr)
+
+data_dir <- "data/"
+
+themes <- read_csv(file.path(data_dir, "themes.csv.gz"))
+colors <- read_csv(file.path(data_dir, "colors.csv.gz"))
+part_categories <- read_csv(file.path(data_dir, "part_categories.csv.gz"))
+parts <- read_csv(file.path(data_dir, "parts.csv.gz"))
+part_relationships <- read_csv(file.path(data_dir, "part_relationships.csv.gz"))
+elements <- read_csv(file.path(data_dir, "elements.csv.gz"))
+sets <- read_csv(file.path(data_dir, "sets.csv.gz"))
+minifigs <- read_csv(file.path(data_dir, "minifigs.csv.gz"))
+inventories <- read_csv(file.path(data_dir, "inventories.csv.gz"))
+inventory_parts <- read_csv(file.path(data_dir, "inventory_parts.csv.gz"))
+inventory_sets <- read_csv(file.path(data_dir, "inventory_sets.csv.gz"))
+inventory_minifigs <- read_csv(file.path(data_dir, "inventory_minifigs.csv.gz"))
+
+lego_data <- read.csv("data/sets.csv.gz")
+head(lego_data)
+```
+
+
+# 3. Warmup Questions
+
+## 3.1. Unique Parts
+```{r}
+number_unique_parts <- n_distinct(parts$part_num)
+parts
+```
+
+
+## 3.2. Colors
+```{r}
+number_colors <- n_distinct(colors$id)
+colors
+```
+
+
+## 3.3. Most Frequent Colors
+```{r}
+color_frequency <- inventory_parts |>
+  inner_join(colors, by = c("color_id" = "id")) |>
+  group_by(name) |>
+  summarise(count = n()) |>
+  arrange(desc(count))
+
+head(color_frequency, 10)
+```
+
+
+## 3.4. Top 10 Most Common Lego Parts
+```{r}
+top_parts <- inventory_parts |>
+  group_by(part_num) |>
+  summarise(count = n()) |>
+  arrange(desc(count)) |>
+  head(10)
+
+top_parts_name <- top_parts |>
+inner_join(parts, by = "part_num")
+
+top_parts_name
+```
+
+
+## 3.5. Average Number of Parts per Set
+```{r}
+parts_per_set <- inventory_parts |>
+  group_by(inventory_id) |>
+  summarise(parts_count = n())
+
+mean_parts <- mean(parts_per_set$parts_count)
+median_parts <- median(parts_per_set$parts_count)
+
+parts_per_set
+mean_parts
+median_parts
+```
+
+
+## 3.6. The Year in which Most Lego Sets Released
+```{r}
+most_sets_year <- sets |>
+  group_by(year) |>
+  summarise(set_count = n()) |>
+  arrange(desc(set_count)) |>
+  slice(1)
+
+most_sets_year
+```
+
+
+## 3.7. The Theme that has Most Sets Released
+```{r}
+most_common_theme <- sets |>
+  inner_join(themes, by = c("theme_id" = "id")) |>
+  group_by(theme_name =name.y) |>
+  summarise(set_count = n()) |>
+  arrange(desc(set_count)) |>
+  slice(1)
+
+most_common_theme
+```
+
+
+## 3.8. Colors by Category
+```{r}
+inventory_parts_with_parts <- inventory_parts |>
+  left_join(parts, by = "part_num")
+
+inventory_parts_with_categories <- inventory_parts_with_parts |>
+  left_join(part_categories, by = c("part_cat_id" = "id"), suffix = c("_part", "_category"))
+
+inventory_parts_full <- inventory_parts_with_categories |>
+  left_join(colors, by = c("color_id" = "id"))
+
+inventory_parts_no_minifigs <- inventory_parts_full |>
+  filter(name_category != "Minifigs")
+  
+category_color_counts <- inventory_parts_no_minifigs |>
+  group_by(name_category, name) |>
+  summarise(count = n(), .groups = "drop") |>
+  ungroup() |>
+  arrange(name_category, desc(count)) |>
+  pivot_wider(names_from = name, values_from = count, values_fill = 0)
+
+inventory_parts_with_parts
+inventory_parts_with_categories
+inventory_parts_full
+inventory_parts_no_minifigs
+category_color_counts
+```
+
+
+# 4. Speed of Filtering Joints
+
+## 4.1. Sampling Rows with Replacement
+```{r}
+library(dplyr)
+library(bench)
+
+sample_inventory_parts <- inventory_parts |>
+  slice_sample(n = 10000, replace = TRUE)
+
+sample_inventory_parts
+```
+
+
+## 4.2. Filtering
+```{r}
+filter_inventories <- sample(unique(inventory_parts$inventory_id), 100)
+```
+
+
+## 4.3. Filtering and Mutating Joins
+```{r}
+join_table <- data.frame(inventory_id = filter_inventories)
+
+time_filter <- system.time({
+  filtered_data <- sample_inventory_parts |>
+    filter(inventory_id %in% filter_inventories)
+})
+
+time_semi_join <- system.time({
+  semi_join_data <- sample_inventory_parts |>
+    semi_join(join_table, by = "inventory_id")
+})
+time_inner_join <- system.time({
+  inner_join_data <- sample_inventory_parts |>
+    inner_join(join_table, by = "inventory_id")
+})
+```
+
+
+## 4.4. Compare the Time for the Computation
+```{r}
+benchmark_results <- data.frame(
+  method = c("filter", "semi_join", "inner_join"),
+  user_time = c(time_filter["user.self"], time_semi_join["user.self"], time_inner_join["user.self"]),
+  system_time = c(time_filter["sys.self"], time_semi_join["sys.self"], time_inner_join["sys.self"]),
+  time_elapsed = c(time_filter["elapsed"], time_semi_join["elapsed"], time_inner_join["elapsed"])
+)
+benchmark_results
+```
+
+
+## 4.5. Sampling Larger Number of Rows
+```{r}
+sample_sizes <- c(10000, 20000, 50000, 100000)
+
+results <- list()
+
+for (n in sample_sizes) {
+  set.seed(123)
+  sampled_inventory_parts <- inventory_parts |>
+    slice_sample(n = n, replace = TRUE)
+  
+  sampled_inventory_ids <- sampled_inventory_parts |>
+    distinct(inventory_id)
+  
+  time_filter <- system.time({
+    filtered_parts_filter <- inventory_parts |>
+      filter(inventory_id %in% sampled_inventory_ids$inventory_id)
+  })
+  
+  time_semi_join <- system.time({
+    filtered_parts_semi_join <- inventory_parts |>
+      semi_join(sampled_inventory_ids, by = "inventory_id")
+  })
+  
+  time_inner_join <- system.time({
+    filtered_parts_inner_join <- inventory_parts |>
+      inner_join(sampled_inventory_ids, by = "inventory_id")
+  })
+  
+  results[[as.character(n)]] <- data.frame(
+    sample_size = n,
+    method = c("filter", "semi_join", "inner_join"),
+    time_user = c(time_filter["user.self"], time_semi_join["user.self"], time_inner_join["user.self"]),
+    time_sys = c(time_filter["sys.self"], time_semi_join["sys.self"], time_inner_join["sys.self"]),
+    time_elapsed = c(time_filter["elapsed"], time_semi_join["elapsed"], time_inner_join["elapsed"])
+  )
+}
+
+benchmark_results_extended <- do.call(rbind, results)
+print(benchmark_results_extended)
+```
+
+
+How fast is semi_join() in comparison to filter() and inner_join?
+
+> From the results, we can conclude that filter() is the fastest method, followed by semi_join() and then inner_join().
+
+
+Is it faster to filter with joins or by data masking using filter()?
+
+> After running the commands again with larger sample sizes, we can still conclude that filtering using data masking with filter() is faster than using joins.
